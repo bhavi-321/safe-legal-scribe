@@ -4,17 +4,17 @@
 
 ---
 
-## 🚀 Features
+## Features
 
-* **📄 Automated PDF Analysis:** Upload any contract PDF; the system extracts text and chunks it for analysis.
-* **⚠️ Risk Detection:** Uses vector similarity search to compare contract clauses against a "Gold Standard" database of known legal risks.
-* **🤖 AI Suggestions:** Automatically generates safe, balanced rewrites for risky clauses using **Mistral-7B** (via OpenRouter).
-* **🛡️ Safety Guardrails:** automatically flags high-risk clauses (like Liability Caps) as "Review Only" to prevent dangerous AI hallucinations.
-* **📊 Observability:** Full tracing of AI logic and latency using **Langfuse**. **(In further updates)**
+* ** Automated PDF Analysis:** Upload any contract PDF; the system extracts text and chunks it for analysis.
+* ** Risk Detection:** Uses vector similarity search to compare contract clauses against a "Gold Standard" database of known legal risks.
+* ** AI Suggestions:** Automatically generates safe, balanced rewrites for risky clauses using **Mistral-7B** (via OpenRouter).
+* ** Safety Guardrails:** automatically flags high-risk clauses (like Liability Caps) as "Review Only" to prevent dangerous AI hallucinations.
+* ** Observability:** Full tracing of AI logic and latency using **Langfuse**. **(In further updates)**
 
 ---
 
-## 🛠️ Tech Stack
+##  Tech Stack
 
 ### **Backend**
 
@@ -38,7 +38,7 @@
 
 ---
 
-## 🏗️ Architecture
+##  Architecture
 
 1. **Ingestion:** User uploads a PDF → Backend extracts text → Splits text into chunks.
 2. **Embedding:** Chunks are converted into vectors using the custom Hugging Face model.
@@ -48,7 +48,7 @@
 
 ---
 
-## 💻 Local Installation
+##  Local Installation
 
 Follow these steps to run the project locally.
 
@@ -113,7 +113,7 @@ npm run dev
 
 ---
 
-## 🌍 Deployment
+##  Deployment
 
 ### **Backend (Railway)**
 
@@ -133,7 +133,7 @@ The frontend is deployed on Vercel for fast global CDN delivery.
 
 ---
 
-## 🔌 API Endpoints
+##  API Endpoints
 
 ### `POST /analyze-contract`
 
