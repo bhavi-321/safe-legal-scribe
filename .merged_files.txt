@@ -1,0 +1,10 @@
+.gitignore
+.env.example
+Makefile
+docs/SETUP.md
+docs/DEPLOYMENT.md
+docs/EVALUATION.md
+ml/evaluation/README.md
+ml/evaluation/metrics.py
+ml/evaluation/test_gold_standard.py
+ml/evaluation/requirements.txt
