@@ -1,155 +1,434 @@
-#  Legality AI - Contract Risk Detector
+# ⚖️ Legality AI - Contract Risk Detector
 
-**Legality AI** is an intelligent contract analysis tool designed to identify legal risks in contracts automatically. It uses a custom-trained Sentence Transformer model to detect risky clauses for the category of "Termination for Convenience", "Uncapped Liability" and "Non-Compete" and uses Large Language Models (LLMs) to suggest safer, more balanced rewrites.
+**Legality AI** is an end-to-end intelligent contract analysis platform designed to identify legal risks in contracts automatically. It uses a custom-trained Sentence Transformer model to detect risky clauses and generate safer alternatives.
 
----
-
-## Features
-
-* ** Automated PDF Analysis:** Upload any contract PDF; the system extracts text and chunks it for analysis.
-* ** Risk Detection:** Uses vector similarity search to compare contract clauses against a "Gold Standard" database of known legal risks.
-* ** AI Suggestions:** Automatically generates safe, balanced rewrites for risky clauses using **Mistral-7B** (via OpenRouter).
-* ** Safety Guardrails:** automatically flags high-risk clauses (like Liability Caps) as "Review Only" to prevent dangerous AI hallucinations.
-* ** Observability:** Full tracing of AI logic and latency using **Langfuse**. **(In further updates)**
+🌐 **Live Demo**: [safe-legal-scribe.vercel.app](https://safe-legal-scribe.vercel.app)
 
 ---
 
-##  Tech Stack
+## 📋 Table of Contents
+
+- [Features](#-features)
+- [Architecture](#-architecture)
+- [Tech Stack](#-tech-stack)
+- [Project Structure](#-project-structure)
+- [Quick Start](#-quick-start)
+- [Development](#-development)
+- [Deployment](#-deployment)
+- [API Reference](#-api-reference)
+- [Contributing](#-contributing)
+
+---
+
+## ✨ Features
+
+- **📄 Automated PDF Analysis**: Upload any contract PDF; the system extracts and chunks text for analysis
+- **⚠️ Risk Detection**: Vector similarity search compares contract clauses against a "Gold Standard" database of known legal risks
+- **🤖 AI Suggestions**: Automatically generates safe, balanced rewrites for risky clauses using Mistral-7B
+- **🛡️ Safety Guardrails**: Flags high-risk clauses (e.g., Liability Caps) as "Review Only" to prevent dangerous AI outputs
+- **📊 Observability**: Full tracing of AI logic and latency using Langfuse (in-progress)
+- **🎨 Professional UI**: Modern React/TypeScript frontend with Tailwind CSS and shadcn-ui components
+
+---
+
+## 🏗️ Architecture
+
+```
+┌─────────────────────────────────────────────────────────────┐
+│                     Frontend (Vercel)                        │
+│              React + TypeScript + Tailwind CSS              │
+└──────────────────────────┬──────────────────────────────────┘
+                           │
+                    HTTP API (REST)
+                           │
+┌──────────────────────────▼──────────────────────────────────┐
+│                    Backend (Railway)                         │
+│                  FastAPI + Python 3.11                       │
+├──────────────────────────────────────────────────────────────┤
+│  • PDF Processing (pdfplumber)                               │
+│  • Text Chunking (langchain-text-splitters)                  │
+│  • Vector Embeddings (Sentence Transformers)                 │
+│  • Risk Detection (Cosine Similarity)                        │
+│  • LLM Integration (OpenRouter)                              │
+│  • Observability (Langfuse)                                  │
+└──────────────────────────┬──────────────────────────────────┘
+                           │
+        ┌──────────────────┼──────────────────┐
+        │                  │                  │
+        ▼                  ▼                  ▼
+   HF Models        Gold Standard        LLM APIs
+ (Sentence Trans)    Database         (OpenRouter)
+
+```
+
+**Flow:**
+1. User uploads PDF → Backend extracts text
+2. Text is chunked using langchain splitters
+3. Chunks converted to vectors using custom Sentence Transformer model
+4. Vectors compared against gold standard dataset
+5. High-similarity clauses flagged as risks
+6. Policy check: "Rewrite Allowed" or "Review Only"
+7. If allowed, LLM generates safer version
+8. Results returned to frontend
+
+---
+
+## 🛠️ Tech Stack
 
 ### **Backend**
-
-* **Framework:** FastAPI (Python)
-* **ML Model:** `sentence-transformers` (Custom Model: `bhavibhatt/legal_model` (on huggingface))
-* **LLM Engine:** OpenRouter API (`mistralai/mistral-7b-instruct`)
-* **Vector Search:** Scikit-Learn (Cosine Similarity)
-* **PDF Processing:** `pdfplumber` & `langchain-text-splitters`
-* **Observability:** Langfuse
+| Component | Technology |
+|-----------|------------|
+| Framework | FastAPI |
+| Language | Python 3.11+ |
+| ML Model | `sentence-transformers` / `bhavibhatt/legal_model` |
+| LLM Engine | OpenRouter API (`mistralai/mistral-7b-instruct`) |
+| Vector Search | Scikit-Learn (Cosine Similarity) |
+| PDF Processing | `pdfplumber` & `langchain-text-splitters` |
+| Observability | Langfuse |
+| Deployment | Railway |
 
 ### **Frontend**
+| Component | Technology |
+|-----------|------------|
+| Framework | React 18 |
+| Language | TypeScript |
+| Build Tool | Vite |
+| Styling | Tailwind CSS + shadcn-ui |
+| Package Manager | npm / bun |
+| Deployment | Vercel |
 
-* **Framework:** React (Vite)
-* **Styling:** Tailwind CSS / Shadcn UI
-* **Language:** TypeScript
-
-### **Deployment**
-
-* **Backend:** Railway
-* **Frontend:** Vercel
-
----
-
-##  Architecture
-
-1. **Ingestion:** User uploads a PDF → Backend extracts text → Splits text into chunks.
-2. **Embedding:** Chunks are converted into vectors using the custom Hugging Face model.
-3. **Risk Search:** Vectors are compared against the `synthetic_gold_standard.json` dataset. High similarity scores trigger a "Risk Detected" flag.
-4. **Policy Check:** The system checks if the clause is "Rewrite Allowed" or "Review Only" (e.g., Liability clauses are never rewritten).
-5. **Generative Rewrite:** If allowed, the LLM generates a safer version of the clause.
+### **Data & ML**
+| Component | Description |
+|-----------|-------------|
+| Training Data | ~50k+ labeled legal clauses |
+| Model | Custom Sentence Transformer fine-tuned on legal contracts |
+| Gold Standard | Synthetic dataset with NLI annotations |
 
 ---
 
-##  Local Installation
+## 📁 Project Structure
 
-Follow these steps to run the project locally.
+```
+legality-ai/
+├── README.md                           # Main project documentation
+├── .github/
+│   └── workflows/                      # CI/CD pipelines
+│       ├── test.yml                    # Run tests on PR
+│       └── deploy.yml                  # Deploy on merge to main
+│
+├── data/                               # Data management
+│   ├── README.md                       # Data documentation
+│   ├── raw/                            # Raw datasets (not committed)
+│   ├── processed/                      # Processed/cleaned data
+│   ├── gold_standard/
+│   │   └── synthetic_gold_standard_with_nli.json
+│   ├── datasets/
+│   │   ├── termination_full_data.csv
+│   │   ├── liability_full_data.csv
+│   │   ├── non_compete_full_data.csv
+│   │   └── master_clauses.csv
+│   └── scripts/
+│       ├── synthesize_data.py          # Generate synthetic data
+│       └── validate_data.py            # Data quality checks
+│
+├── ml/                                 # Machine Learning
+│   ├── README.md                       # ML documentation
+│   ├── requirements.txt                # ML dependencies
+│   ├── models/
+│   │   ├── __init__.py
+│   │   ├── embedder.py                 # Sentence Transformer wrapper
+│   │   └── risk_detector.py            # Risk detection logic
+│   ├── training/
+│   │   ├── train.py                    # Training script
+│   │   ├── evaluate.py                 # Model evaluation
+│   │   └── config.yaml                 # Training hyperparameters
+│   └── tests/
+│       ├── test_embedder.py
+│       └── test_detector.py
+│
+├── backend/                            # Backend API
+│   ├── README.md                       # Backend documentation
+│   ├── requirements.txt                # Python dependencies
+│   ├── .env.example                    # Environment variables template
+│   ├── app/
+│   │   ├── __init__.py
+│   │   ├── main.py                     # FastAPI app entry point
+│   │   ├── config.py                   # Configuration management
+│   │   ├── routes/
+│   │   │   ├── __init__.py
+│   │   │   ├── analyze.py              # /analyze-contract endpoint
+│   │   │   └── health.py               # /health endpoint
+│   │   ├── services/
+│   │   │   ├── __init__.py
+│   │   │   ├── pdf_processor.py        # PDF extraction
+│   │   │   ├── risk_analyzer.py        # Risk analysis logic
+│   │   │   └── llm_generator.py        # Clause rewriting
+│   │   ├── models/
+│   │   │   ├── __init__.py
+│   │   │   └── schemas.py              # Pydantic schemas
+│   │   └── utils/
+│   │       ├── __init__.py
+│   │       ├── logger.py               # Logging setup
+│   │       └── errors.py               # Custom exceptions
+│   ├── tests/
+│   │   ├── test_api.py
+│   │   ├── test_services.py
+│   │   └── conftest.py
+│   └── uvicorn_run.py                  # Server runner
+│
+├── frontend/                           # React frontend
+│   ├── README.md                       # Frontend documentation
+│   ├── package.json
+│   ├── vite.config.ts
+│   ├── tsconfig.json
+│   ├── tailwind.config.ts
+│   ├── postcss.config.js
+│   ├── index.html
+│   ├── public/                         # Static assets
+│   ├── src/
+│   │   ├── main.tsx                    # React entry point
+│   │   ├── App.tsx                     # Root component
+│   │   ├── pages/
+│   │   │   ├── Home.tsx
+│   │   │   ├── Dashboard.tsx
+│   │   │   └── Results.tsx
+│   │   ├── components/
+│   │   │   ├── FileUploader.tsx
+│   │   │   ├── RiskCard.tsx
+│   │   │   ├── Navbar.tsx
+│   │   │   └── Footer.tsx
+│   │   ├── services/
+│   │   │   ├── api.ts                  # API client
+│   │   │   └── types.ts                # TypeScript types
+│   │   ├── hooks/
+│   │   │   ├── useAnalysis.ts
+│   │   │   └── useUpload.ts
+│   │   ├── styles/
+│   │   │   └── globals.css
+│   │   └── utils/
+│   │       └── helpers.ts
+│   └── dist/                           # Build output
+│
+├── docs/                               # Documentation
+│   ├── ARCHITECTURE.md                 # Detailed architecture
+│   ├── API.md                          # API documentation
+│   ├── SETUP.md                        # Local setup guide
+│   ├── DEPLOYMENT.md                   # Deployment guide
+│   ├── CONTRIBUTING.md                 # Contribution guidelines
+│   └── MODELS.md                       # ML model documentation
+│
+├── .gitignore                          # Git ignore rules
+├── .env.example                        # Global environment template
+├── docker-compose.yml                  # Local development with Docker
+├── Makefile                            # Common commands
+└── LICENSE                             # MIT License
+```
+
+---
+
+## 🚀 Quick Start
+
+### **Prerequisites**
+- Python 3.11+
+- Node.js 18+
+- Git
 
 ### **1. Clone the Repository**
 
 ```bash
-git clone https://github.com/your-username/legality-ai.git
-cd legality-ai
-
+git clone https://github.com/bhavi-321/safe_legal_ai.git
+cd safe_legal_ai
 ```
 
 ### **2. Backend Setup**
 
-Navigate to the backend folder and install dependencies.
-
 ```bash
 cd backend
 
-# Create a virtual environment (Recommended)
+# Create virtual environment
 python -m venv venv
 source venv/bin/activate  # On Windows: venv\Scripts\activate
 
 # Install dependencies
 pip install -r requirements.txt
 
+# Copy environment template and fill in your keys
+cp .env.example .env
+# Edit .env with your API keys
+
+# Run server
+uvicorn app.main:app --reload
 ```
 
-**Configure Environment Variables:**
-Create a `.env` file inside the `backend/` folder:
-
-```env
-# AI & Model Keys
-OPENROUTER_API_KEY=your_openrouter_key_here
-HF_TOKEN=your_huggingface_token_here
-
-# Langfuse (Observability) - Optional
-LANGFUSE_PUBLIC_KEY=your_langfuse_public_key_here
-LANGFUSE_SECRET_KEY=your_langfuse_secret_key_here
-LANGFUSE_HOST=https://cloud.langfuse.com
-
-```
-
-**Run the Server:**
-
-```bash
-uvicorn main:app --reload
-# Backend will run at: http://127.0.0.1:8000
-
-```
+**Backend runs at**: `http://localhost:8000`
 
 ### **3. Frontend Setup**
 
-Open a new terminal and navigate to the root (or frontend folder if separate).
+```bash
+cd frontend
+
+# Install dependencies
+npm install
+
+# Start development server
+npm run dev
+```
+
+**Frontend runs at**: `http://localhost:5173`
+
+### **4. Upload a Contract**
+
+1. Navigate to http://localhost:5173
+2. Upload a PDF contract
+3. View detected risks and suggestions
+
+---
+
+## 👨‍💻 Development
+
+### **Running Tests**
 
 ```bash
-cd frontend  # or just stay in root if package.json is there
-npm install
-npm run dev
-# Frontend will run at: http://localhost:5173
+# Backend tests
+cd backend
+pytest -v
 
+# Frontend tests (if configured)
+cd frontend
+npm run test
+```
+
+### **Code Quality**
+
+```bash
+# Backend linting
+cd backend
+flake8 app/
+pylint app/
+
+# Frontend linting
+cd frontend
+npm run lint
+```
+
+### **Building for Production**
+
+```bash
+# Frontend build
+cd frontend
+npm run build
+# Output: dist/
+
+# Backend is run directly with uvicorn (see deployment)
 ```
 
 ---
 
-##  Deployment
-
-### **Backend (Railway)**
-
-The backend is deployed on Railway to handle the heavy ML libraries (`torch`, `transformers`).
-
-* **Build Command:** `pip install -r requirements.txt`
-* **Start Command:** `uvicorn main:app --host 0.0.0.0 --port $PORT`
-* **Root Directory:** `/backend`
+## 🌐 Deployment
 
 ### **Frontend (Vercel)**
 
-The frontend is deployed on Vercel for fast global CDN delivery.
+1. Connect your GitHub repo to Vercel
+2. Set root directory to `frontend/`
+3. Build command: `npm run build`
+4. Output directory: `dist`
+5. Deploy!
 
-* **Framework Preset:** Vite
-* **Build Command:** `npm run build`
-* **Output Directory:** `dist`
+### **Backend (Railway)**
+
+1. Connect your GitHub repo to Railway
+2. Set root directory to `backend/`
+3. Add environment variables from `.env.example`
+4. Build command: `pip install -r requirements.txt`
+5. Start command: `uvicorn app.main:app --host 0.0.0.0 --port $PORT`
+
+See [DEPLOYMENT.md](docs/DEPLOYMENT.md) for detailed steps.
 
 ---
 
-##  API Endpoints
+## 📡 API Reference
 
 ### `POST /analyze-contract`
 
-Uploads a PDF and returns a list of detected risks.
+Analyze a contract PDF for legal risks.
+
+**Request:**
+```bash
+curl -X POST "http://localhost:8000/analyze-contract" \
+  -F "file=@contract.pdf"
+```
+
+**Response:**
+```json
+{
+  "filename": "contract.pdf",
+  "status": "success",
+  "risks": [
+    {
+      "risk_category": "Termination For Convenience",
+      "chunk_text": "Party A may terminate at any time...",
+      "similarity_score": 0.87,
+      "severity": "high",
+      "policy": "rewrite_allowed",
+      "suggested_clause": "Party A may terminate with 30 days prior written notice..."
+    }
+  ],
+  "total_risks": 1,
+  "processing_time_ms": 2340
+}
+```
 
 ### `GET /health`
 
-Checks if the ML model is loaded and external APIs are connected.
+Check system health and model status.
+
+**Response:**
+```json
+{
+  "status": "healthy",
+  "model_loaded": true,
+  "api_connected": true,
+  "version": "1.0.0"
+}
+```
+
+See [API.md](docs/API.md) for full reference.
 
 ---
 
-## 🤝 Contributers
+## 🤝 Contributing
 
-1. Bhavyang
-2. Sneha
-3. Vedant
+Contributions are welcome! Please read [CONTRIBUTING.md](docs/CONTRIBUTING.md) first.
+
+1. Fork the repository
+2. Create a feature branch: `git checkout -b feature/your-feature`
+3. Commit changes: `git commit -m "feat: add your feature"`
+4. Push to branch: `git push origin feature/your-feature`
+5. Open a Pull Request
 
 ---
 
+## 👥 Contributors
+
+- **Bhavyang** - ML & Backend
+- **Sneha** - Frontend & Design
+- **Vedant** - Data & Infrastructure
+
+---
+
+## 📄 License
+
+MIT License - see LICENSE file for details.
+
+---
+
+## 📞 Support
+
+For issues, questions, or suggestions:
+- Open an [Issue](https://github.com/bhavi-321/safe_legal_ai/issues)
+- Check [Documentation](docs/)
+- Email: your-email@example.com
+
+---
+
+**Made with ❤️ for legal professionals and developers**
