@@ -410,15 +410,9 @@ Contributions are welcome! Please read [CONTRIBUTING.md](docs/CONTRIBUTING.md) f
 
 ## 👥 Contributors
 
-- **Bhavyang** - ML & Backend
-- **Sneha** - Frontend & Design
-- **Vedant** - Data & Infrastructure
-
----
-
-## 📄 License
-
-MIT License - see LICENSE file for details.
+- **Bhavyang**
+- **Sneha**
+- **Vedant**
 
 ---
 
@@ -427,8 +421,7 @@ MIT License - see LICENSE file for details.
 For issues, questions, or suggestions:
 - Open an [Issue](https://github.com/bhavi-321/safe_legal_ai/issues)
 - Check [Documentation](docs/)
-- Email: your-email@example.com
+- Email: bhavyangbhatt03@gmail.com
 
 ---
 
-**Made with ❤️ for legal professionals and developers**
