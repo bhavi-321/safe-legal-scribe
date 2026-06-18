@@ -1,0 +1,245 @@
+{
+  "dataset_path": "D:\\liga\\safe_legal_ai\\backend\\dataset\\synthetic_gold_standard_with_nli.json",
+  "n_gold_standard_entries": 46,
+  "n_labeled_examples": 92,
+  "categories": [
+    "Termination For Convenience",
+    "Uncapped Liability",
+    "Non-Compete"
+  ],
+  "threshold_used": 0.5,
+  "overall": {
+    "threshold": 0.5,
+    "tp": 46,
+    "fp": 46,
+    "tn": 0,
+    "fn": 0,
+    "precision": 0.5,
+    "recall": 1.0,
+    "f1": 0.6666666666666666,
+    "accuracy": 0.5,
+    "false_positive_rate": 1.0,
+    "false_negative_rate": 0.0
+  },
+  "threshold_sweep": [
+    {
+      "threshold": 0.3,
+      "tp": 46,
+      "fp": 46,
+      "tn": 0,
+      "fn": 0,
+      "precision": 0.5,
+      "recall": 1.0,
+      "f1": 0.6666666666666666,
+      "accuracy": 0.5,
+      "false_positive_rate": 1.0,
+      "false_negative_rate": 0.0
+    },
+    {
+      "threshold": 0.35,
+      "tp": 46,
+      "fp": 46,
+      "tn": 0,
+      "fn": 0,
+      "precision": 0.5,
+      "recall": 1.0,
+      "f1": 0.6666666666666666,
+      "accuracy": 0.5,
+      "false_positive_rate": 1.0,
+      "false_negative_rate": 0.0
+    },
+    {
+      "threshold": 0.4,
+      "tp": 46,
+      "fp": 46,
+      "tn": 0,
+      "fn": 0,
+      "precision": 0.5,
+      "recall": 1.0,
+      "f1": 0.6666666666666666,
+      "accuracy": 0.5,
+      "false_positive_rate": 1.0,
+      "false_negative_rate": 0.0
+    },
+    {
+      "threshold": 0.45,
+      "tp": 46,
+      "fp": 46,
+      "tn": 0,
+      "fn": 0,
+      "precision": 0.5,
+      "recall": 1.0,
+      "f1": 0.6666666666666666,
+      "accuracy": 0.5,
+      "false_positive_rate": 1.0,
+      "false_negative_rate": 0.0
+    },
+    {
+      "threshold": 0.5,
+      "tp": 46,
+      "fp": 46,
+      "tn": 0,
+      "fn": 0,
+      "precision": 0.5,
+      "recall": 1.0,
+      "f1": 0.6666666666666666,
+      "accuracy": 0.5,
+      "false_positive_rate": 1.0,
+      "false_negative_rate": 0.0
+    },
+    {
+      "threshold": 0.55,
+      "tp": 46,
+      "fp": 46,
+      "tn": 0,
+      "fn": 0,
+      "precision": 0.5,
+      "recall": 1.0,
+      "f1": 0.6666666666666666,
+      "accuracy": 0.5,
+      "false_positive_rate": 1.0,
+      "false_negative_rate": 0.0
+    },
+    {
+      "threshold": 0.6,
+      "tp": 46,
+      "fp": 46,
+      "tn": 0,
+      "fn": 0,
+      "precision": 0.5,
+      "recall": 1.0,
+      "f1": 0.6666666666666666,
+      "accuracy": 0.5,
+      "false_positive_rate": 1.0,
+      "false_negative_rate": 0.0
+    },
+    {
+      "threshold": 0.65,
+      "tp": 46,
+      "fp": 46,
+      "tn": 0,
+      "fn": 0,
+      "precision": 0.5,
+      "recall": 1.0,
+      "f1": 0.6666666666666666,
+      "accuracy": 0.5,
+      "false_positive_rate": 1.0,
+      "false_negative_rate": 0.0
+    },
+    {
+      "threshold": 0.7,
+      "tp": 45,
+      "fp": 44,
+      "tn": 2,
+      "fn": 1,
+      "precision": 0.5056179775280899,
+      "recall": 0.9782608695652174,
+      "f1": 0.6666666666666667,
+      "accuracy": 0.5108695652173914,
+      "false_positive_rate": 0.9565217391304348,
+      "false_negative_rate": 0.021739130434782608
+    },
+    {
+      "threshold": 0.75,
+      "tp": 26,
+      "fp": 29,
+      "tn": 17,
+      "fn": 20,
+      "precision": 0.4727272727272727,
+      "recall": 0.5652173913043478,
+      "f1": 0.5148514851485148,
+      "accuracy": 0.4673913043478261,
+      "false_positive_rate": 0.6304347826086957,
+      "false_negative_rate": 0.43478260869565216
+    },
+    {
+      "threshold": 0.8,
+      "tp": 5,
+      "fp": 10,
+      "tn": 36,
+      "fn": 41,
+      "precision": 0.3333333333333333,
+      "recall": 0.10869565217391304,
+      "f1": 0.16393442622950818,
+      "accuracy": 0.44565217391304346,
+      "false_positive_rate": 0.21739130434782608,
+      "false_negative_rate": 0.8913043478260869
+    },
+    {
+      "threshold": 0.85,
+      "tp": 0,
+      "fp": 1,
+      "tn": 45,
+      "fn": 46,
+      "precision": 0.0,
+      "recall": 0.0,
+      "f1": 0.0,
+      "accuracy": 0.4891304347826087,
+      "false_positive_rate": 0.021739130434782608,
+      "false_negative_rate": 1.0
+    },
+    {
+      "threshold": 0.9,
+      "tp": 0,
+      "fp": 0,
+      "tn": 46,
+      "fn": 46,
+      "precision": 0.0,
+      "recall": 0.0,
+      "f1": 0.0,
+      "accuracy": 0.5,
+      "false_positive_rate": 0.0,
+      "false_negative_rate": 1.0
+    }
+  ],
+  "best_threshold": {
+    "threshold": 0.7,
+    "tp": 45,
+    "fp": 44,
+    "tn": 2,
+    "fn": 1,
+    "precision": 0.5056179775280899,
+    "recall": 0.9782608695652174,
+    "f1": 0.6666666666666667,
+    "accuracy": 0.5108695652173914,
+    "false_positive_rate": 0.9565217391304348,
+    "false_negative_rate": 0.021739130434782608
+  },
+  "nli_hypothesis_similarity": {
+    "mean_similarity_to_own_hypothesis": 0.7558360695838928,
+    "mean_similarity_to_other_hypotheses": 0.7205840349197388,
+    "separation": 0.03525203466415405
+  },
+  "per_category": {
+    "Termination For Convenience": {
+      "n": 34,
+      "accuracy": 0.5,
+      "precision": 0.5,
+      "recall": 1.0,
+      "f1": 0.6666666666666666
+    },
+    "Uncapped Liability": {
+      "n": 32,
+      "accuracy": 0.5,
+      "precision": 0.5,
+      "recall": 1.0,
+      "f1": 0.6666666666666666
+    },
+    "Non-Compete": {
+      "n": 26,
+      "accuracy": 0.5,
+      "precision": 0.5,
+      "recall": 1.0,
+      "f1": 0.6666666666666666
+    }
+  },
+  "ranking_metrics": {
+    "ndcg_at_5_per_category": {
+      "Termination For Convenience": 0.5147714448836774,
+      "Uncapped Liability": 0.38356636737133565,
+      "Non-Compete": 0.14606834984270645
+    },
+    "ndcg_at_5_macro": 0.34813538736590655,
+    "mrr": 0.4166666666666667
+  }
+}

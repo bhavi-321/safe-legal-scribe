@@ -24,6 +24,10 @@ help:
 	@echo "  make format           - Format all code"
 	@echo "  make type-check       - Run type checking"
 	@echo ""
+	@echo "Evaluation:"
+	@echo "  make eval             - Run gold standard accuracy evaluation"
+	@echo "  make eval-metrics-test- Unit test the metric math (no model needed)"
+	@echo ""
 	@echo "Building:"
 	@echo "  make build            - Build frontend for production"
 	@echo "  make build-frontend   - Build frontend only"
@@ -79,6 +83,14 @@ test-frontend:
 	@echo "Running frontend tests..."
 	cd frontend && npm run test
 
+eval:
+	@echo "Running gold standard evaluation against backend/dataset/synthetic_gold_standard_with_nli.json..."
+	cd ml/evaluation && pip install -r requirements.txt --break-system-packages && python test_gold_standard.py
+
+eval-metrics-test:
+	@echo "Unit testing the metric math (precision/recall/F1/NDCG/MRR) -- no model or network required..."
+	cd ml/evaluation && pip install -r requirements.txt --break-system-packages && pytest test_metrics.py -v
+
 lint: lint-backend lint-frontend
 
 lint-backend:
@@ -126,6 +138,6 @@ clean-frontend:
 	@echo "✅ Frontend cleaned"
 
 .PHONY: help install install-backend install-frontend dev backend-dev frontend-dev
-.PHONY: test test-backend test-frontend lint lint-backend lint-frontend
+.PHONY: test test-backend test-frontend eval eval-metrics-test lint lint-backend lint-frontend
 .PHONY: format format-backend format-frontend type-check build build-frontend
 .PHONY: clean clean-backend clean-frontend
