@@ -36,6 +36,7 @@ Notes / honesty about what this measures:
 
 import argparse
 import json
+import socket
 import sys
 from pathlib import Path
 
@@ -122,16 +123,43 @@ def get_category_hypotheses(gold_standard: list) -> dict:
 # ---------------------------------------------------------------------------
 # Model loading / embedding (mirrors backend/vector_search.py's RiskDetector)
 # ---------------------------------------------------------------------------
+def _can_resolve_huggingface() -> bool:
+    try:
+        socket.getaddrinfo("huggingface.co", 443)
+        return True
+    except OSError:
+        return False
+
+
 def get_model():
     from sentence_transformers import SentenceTransformer
     hf_model_id = "bhavibhatt/legal_model"
-    try:
-        print(f"Loading model from Hugging Face: {hf_model_id}...")
-        return SentenceTransformer(hf_model_id)
-    except Exception as e:
-        print(f"[WARN] Could not load '{hf_model_id}' ({e}); "
-              f"falling back to 'all-MiniLM-L6-v2'.")
-        return SentenceTransformer("all-MiniLM-L6-v2")
+    fallback_model_id = "all-MiniLM-L6-v2"
+
+    has_hf_dns = _can_resolve_huggingface()
+    if not has_hf_dns:
+        print("[WARN] huggingface.co is unreachable in this environment; "
+              "trying local model cache only.")
+
+    model_candidates = [hf_model_id, fallback_model_id]
+    errors = []
+    for model_id in model_candidates:
+        modes = [True] if not has_hf_dns else [True, False]
+        for local_only in modes:
+            source = "local cache" if local_only else "Hugging Face"
+            try:
+                print(f"Loading model '{model_id}' from {source}...")
+                model = SentenceTransformer(model_id, local_files_only=local_only)
+                return model, model_id, source
+            except Exception as e:
+                errors.append(f"{model_id} ({source}): {e}")
+                print(f"[WARN] Could not load '{model_id}' from {source}: {e}")
+
+    raise RuntimeError(
+        "Unable to load any sentence-transformer model for evaluation.\n"
+        "Tried:\n- " + "\n- ".join(errors) + "\n"
+        "If running offline, pre-download one of these models into the local Hugging Face cache."
+    )
 
 
 def compute_similarity_matrix(model, examples: list, categories: list, hypotheses: dict) -> np.ndarray:
@@ -324,7 +352,7 @@ def main():
     print(f"Loaded {len(gold_standard)} gold-standard entries -> "
           f"{len(examples)} labeled examples across {len(categories)} categories.")
 
-    model = get_model()
+    model, model_used, model_source = get_model()
     print("Computing embeddings and similarity matrix...")
     sims = compute_similarity_matrix(model, examples, categories, hypotheses)
 
@@ -340,7 +368,9 @@ def main():
           f"vs. the {args.threshold} used for the main report above.")
 
     save_results({
-        "dataset_path": str(DATASET_PATH),
+        "dataset_path": str(DATASET_PATH.relative_to(REPO_ROOT)),
+        "model_used": model_used,
+        "model_source": model_source,
         "n_gold_standard_entries": len(gold_standard),
         "n_labeled_examples": len(examples),
         "categories": categories,
